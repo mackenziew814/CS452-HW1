@@ -19,7 +19,7 @@ typedef struct {
 } *Rep;
 
 static Rep rep(Deq q) {
-  if (!q) ERROR("zero pointer");
+  if (!q) { WARN("null Deq"); return 0; } //Warns and returns 0
   return (Rep)q;
 }
 
@@ -53,7 +53,7 @@ static void put(Rep r, End e, Data d) {
 
 //Returns without removing the data at the specified index
 static Data ith(Rep r, End e, int i)  {
-  if(i >= r->len || i < 0){
+  if(!r || i >= r->len || i < 0){
     return 0;
   }
 
