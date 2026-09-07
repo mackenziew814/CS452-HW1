@@ -53,7 +53,7 @@ static void put(Rep r, End e, Data d) {
 
 //Returns without removing the data at the specified index
 static Data ith(Rep r, End e, int i)  {
-  if(i < r->len || i < 0){
+  if(i >= r->len || i < 0){
     return 0;
   }
 
