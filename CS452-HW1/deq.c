@@ -28,29 +28,107 @@ static End other(End e) {
     return e==Head ? Tail : Head;
  }
 
+//Inserts new node into queue towards the end specified
 static void put(Rep r, End e, Data d) {
-    End otherEnd = other(e);
-    Node n = (Node)malloc(sizeof(*n));
-    if (!n){
-        ERROR("malloc() failed");
-    }
-    n->data = d;
-    n->np[e] = 0;
-    n->np[otherEnd] = r->ht[e];
+  End otherEnd = other(e);
+  Node n = (Node)malloc(sizeof(*n));
+  if (!n){
+      ERROR("malloc() failed");
+  }
+
+  n->data = d;
+  n->np[e] = 0; //New node is now the head or tail
+  n->np[otherEnd] = r->ht[e]; //New node points to old node
+
+  //Checks if end is head or tail
+  if (r->ht[e])
+    r->ht[e]->np[e] = n; // sets new node as new head or tail
+  else
+    r->ht[otherEnd] = n; // deque was empty
+ 
+  r->ht[e] = n;
+  r->len++;
+
 }
 
-
+//Returns without removing the data at the specified index
 static Data ith(Rep r, End e, int i)  {
-return 0;
+  if(i < r->len || i < 0){
+    return 0;
+  }
+
+  End otherEnd = other(e);
+  Node n = r->ht[e];
+
+  for(int j = 0; j < i; j++){
+    n = n->np[otherEnd];
+  }
+  
+ return n->data;
 }
 
-static Data get(Rep r, End e)         {
- return 0;
- }
+//Returns and removes data at end e
+static Data get(Rep r, End e) {
+  if(!r || r->len <= 0){
+    return 0;
+  }
 
+  End otherEnd = other(e);
+  Node n = r->ht[e];
+  Data d = n->data;
+
+  r->ht[e] = n->np[otherEnd];
+  if (r->ht[e]){
+    r->ht[e]->np[e] = 0;   // new head or tail
+  }
+  else {
+    r->ht[otherEnd] = 0; //Queue is now emtpy
+  }
+
+  free(n);
+  r->len--;
+  return d;
+}
+
+//Remove specified data from queue 
 static Data rem(Rep r, End e, Data d) {
- return 0;
- }
+  if(!r){
+    return 0;
+  }
+
+  End otherEnd = other(e);
+  Node n = r->ht[e];
+  int i;
+  //Walk through queue until data is found
+  for (i = 0; i < r->len && n->data != d; i++){
+    n=n->np[otherEnd];
+  }
+
+  //Return 0 if not found
+  if (i == r->len){
+    return 0;
+  } 
+
+  //Update pointers on provided end
+  if (n->np[e]){
+    n->np[e]->np[otherEnd] = n->np[otherEnd];
+  }  
+  else {
+    r->ht[e] = n->np[otherEnd];
+  } 
+
+  //Update pointers on the opposite end
+  if (n->np[otherEnd]){
+    n->np[otherEnd]->np[e] = n->np[e];
+  }  
+  else{
+    r->ht[otherEnd] = n->np[e];
+  } 
+
+  r->len--;
+  free(n);
+  return d;
+}
 
 extern Deq deq_new() {
   Rep r=(Rep)malloc(sizeof(*r));
