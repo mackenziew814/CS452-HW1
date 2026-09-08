@@ -44,6 +44,15 @@ free(str);
 printf("Queue Length: %d\n", deq_len(tp)); //Expected 3
 deq_del(tp, 0);
 
+//Test get on one element queue
+printf("\n=====Test Get on 1 Element Queue=====\n");
+Deq one = deq_new();
+deq_tail_put(one, "only");
+
+printf("Head get: %s\n", (char *)deq_head_get(one)); //Expected "only"
+printf("Queue Length: %d\n", deq_len(one)); //Expected 0
+deq_del(one, 0);
+
 //Test both head and tail put
 printf("\n=====Test Head & Tail Put=====\n");
 Deq htp = deq_new();
@@ -112,13 +121,13 @@ str = deq_str(rtp, 0);
 printf("Queue: %s\n",str);
 free(str);
 printf("Expected Rem Middle: b\n");
-printf("Rem Middle: %s\n", (char*)deq_tail_rem(rtp, b)); //Queue is now: a c d
-printf("Expected Rem Head: a\n");
-printf("Rem Head: %s\n", (char*)deq_head_rem(rtp, a)); //Queue is now: c d
-printf("Expected Rem Tail: d\n");
-printf("Rem Tail: %s\n", (char*)deq_tail_rem(rtp, d)); //Queue is now: c
+printf("Actual: %s\n", (char*)deq_tail_rem(rtp, b)); //Queue is now: a c d
+printf("\nExpected Rem Head: a\n");
+printf("Actual: %s\n", (char*)deq_head_rem(rtp, a)); //Queue is now: c d
+printf("\nExpected Rem Tail: d\n");
+printf("Actual: %s\n", (char*)deq_tail_rem(rtp, d)); //Queue is now: c
 
-printf("Expected Queue: c\n");
+printf("\nExpected Queue: c\n");
 str = deq_str(rtp, 0);
 printf("Queue: %s\n",str);
 free(str);
@@ -126,46 +135,47 @@ printf("Queue Length: %d\n", deq_len(rtp));
 
 deq_del(rtp,0);
 
-//Testing invalid input
-printf("\n=====Test Invalid Input=====\n");
+printf("\n=====Rem on One Element Queue=====\n");
+Deq oneRem = deq_new();
+deq_tail_put(oneRem, "only");
 
-// //Null deque handle passed to various functions
-// // printf("Expected deq_len(0): 0\n");
-// // printf("deq_len(0): %d\n", deq_len(0));
+printf("Rem only: %s\n", (char *)deq_head_rem(oneRem, "only"));//Expected "only"
+printf("Length: %d\n", deq_len(oneRem)); //Expected 0
+deq_del(oneRem, 0);
 
-// printf("Expected deq_head_get(0): (nil)\n");
-// printf("deq_head_get(0): %p\n", deq_head_get(0));
 
-// // printf("Expected deq_head_ith(0,0): (nil)\n");
-// // printf("deq_head_ith(0,0): %p\n", deq_head_ith(0,0));
+//Testing edge cases (should return 0, not crash)
+printf("\n=====Test Edge Cases=====\n");
 
-// printf("Expected deq_head_rem(0,"x"): (nil)\n");
-// printf("deq_head_rem(0,"x"): %p\n", deq_head_rem(0,"x"));
+//Empty deque: get should return 0
+Deq ep = deq_new();
 
-// // printf("Expected deq_str(0,0): (nil)\n");
-// // printf("deq_str(0,0): %p\n", (void*)deq_str(0,0));
+printf("Get on Empty\n");
+printf("Expected: (nil)\n");
+printf("Actual: %p\n", deq_head_get(ep));
 
-// deq_head_put(0, "x");
+printf("\nLen on Empty\n");
+printf("Expected: 0\n");
+printf("Actual: %d\n", deq_len(ep));
 
-// //Empty deque: get should return 0
-// Deq ep = deq_new();
+deq_tail_put(ep, "only");
 
-// printf("Expected get on empty: (nil)\n");
-// printf("get on empty: %p\n", deq_head_get(ep));
+printf("\nNegative Ith\n");
+printf("Expected: (nil)\n");
+printf("Actual: %p\n", deq_head_ith(ep, -1));
 
-// deq_tail_put(ep, "only");
+printf("\nOut of Range Ith\n");
+printf("Expected: (nil)\n");
+printf("Actual: %p\n", deq_head_ith(ep, 5));
 
-// //Out-of-range & negative index: ith should return 0
-// printf("Expected ith(-1): (nil)\n");
-// printf("ith(-1): %p\n", deq_head_ith(ep, -1));
+//Removing something not present should return 0
+printf("\nRem Empty Queue\n");
+printf("Expected: (nil)\n");
+printf("Actual: %p\n", deq_head_rem(ep, "not present"));
 
-// printf("Expected ith(5): (nil)\n");
-// printf("ith(5): %p\n", deq_head_ith(ep, 5));
+printf("\nCheck Length\n");
+printf("Expected: 1\n");
+printf("Actual: %d\n", deq_len(ep));
 
-// printf("Expected ith(0): only\n");
-// printf("ith(0): %s\n", (char*)deq_head_ith(ep, 0));
-
-// deq_del(ep,0);
-
-return 0;
+deq_del(ep,0);
 }

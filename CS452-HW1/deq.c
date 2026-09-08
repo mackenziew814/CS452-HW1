@@ -19,7 +19,7 @@ typedef struct {
 } *Rep;
 
 static Rep rep(Deq q) {
-  if (!q) { WARN("null Deq"); return 0; } //Warns and returns 0
+  if (!q) { return 0; } //returns 0
   return (Rep)q;
 }
 
@@ -29,6 +29,7 @@ static End other(End e) {
  }
 
 //Inserts new node into queue towards the end specified
+//Return 0 on invalid input
 static void put(Rep r, End e, Data d) {
   End otherEnd = other(e);
   Node n = (Node)malloc(sizeof(*n));
@@ -52,6 +53,7 @@ static void put(Rep r, End e, Data d) {
 }
 
 //Returns without removing the data at the specified index
+//Returns 0 if given improper input
 static Data ith(Rep r, End e, int i)  {
   if(!r || i >= r->len || i < 0){
     return 0;
@@ -68,6 +70,7 @@ static Data ith(Rep r, End e, int i)  {
 }
 
 //Returns and removes data at end e
+//Returns 0 if given improper input
 static Data get(Rep r, End e) {
   if(!r || r->len <= 0){
     return 0;
@@ -91,6 +94,7 @@ static Data get(Rep r, End e) {
 }
 
 //Remove specified data from queue 
+//Returns 0 if given improper input
 static Data rem(Rep r, End e, Data d) {
   if(!r){
     return 0;
